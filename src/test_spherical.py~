@@ -1,0 +1,78 @@
+#!/usr/bin/python
+
+import rospy
+import roslib
+import tf 
+import geometry_msgs.msg
+from geometry_msgs.msg import Point
+from sensor_msgs.msg import JointState
+from std_msgs.msg import String
+import numpy as np 
+
+
+
+def spherical():
+    pub = rospy.Publisher("joint_states", JointState, queue_size = 10)
+    
+    rospy.set_param('~Fre',50)
+    rate=rospy.Rate(rospy.get_param('~Fre'))
+    link1=0.5
+    
+    
+    #br = tf.TransformBroadcaster()
+    
+    while not rospy.is_shutdown():
+        now = rospy.Time.now()
+        '''
+        try: 
+            
+            listener.waitForTransform(right_shoulder_id, right_elbow_id, now, rospy.Duration(4.0))
+            (trans,rot)=listener.lookupTransform(right_elbow_id, right_hand_id, now)
+        
+        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            pass 
+        
+
+        Xc=list(trans)[0]
+        Yc=list(trans)[1]
+        Zc=list(trans)[2]
+        '''
+        
+        t = (rospy.Time.now() - base_time).to_sec()
+        
+        Xc = 0.5 * np.cos((2* np.pi *t)*0.2)
+        Yc = 0.5 * np.sin((2* np.pi *t)*0.2)
+        Zc=  0.5 * np.sin((2* np.pi *t)*0.2)
+        
+        theta1=np.pi+np.arctan2(Xc,Yc)
+        r=np.sqrt(Xc**2+Yc**2)
+        s=Zc
+        theta2=np.arctan2(r,s)+np.pi/2
+        d3=np.sqrt(r**2+s**2)-link1
+        if d3 > 0.02:
+            d3= 0.02 
+        if d3 < 0:
+            d3= 0
+        
+        
+        js = JointState(name=['spherical1', 'spherical2','spherical3','joint2','joint4', 'joint5','joint7', 'joint8','joint10', 'joint11'],position=[theta1,theta2,d3,0,0,0,0,0,0,0])
+        js.header.stamp = rospy.Time.now()
+        
+ 
+        #br.sendTransform((0, 0, 0), tf.transformations.quaternion_from_euler(0, 0, theta1), rospy.Time.now(),'link1','base_link')
+        #br.sendTransform((1, 0, 0), tf.transformations.quaternion_from_euler(0, 0, theta2), rospy.Time.now(),'link2','link1')
+        #br.sendTransform((1, 0, 0), tf.transformations.quaternion_from_euler(0, 0, 0), rospy.Time.now(),'link3','link2')
+        
+        pub.publish(js)  
+        
+        #rate.sleep()
+if __name__ == '__main__':
+    try:
+        rospy.init_node('test', anonymous = True)
+        listener = tf.TransformListener()
+        rospy.sleep(2.)
+        base_time = rospy.Time.now()
+        spherical()
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass

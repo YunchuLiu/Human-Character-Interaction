@@ -1,0 +1,101 @@
+#!/usr/bin/python
+
+import rospy
+import roslib
+import tf 
+import geometry_msgs.msg
+from geometry_msgs.msg import Point
+from sensor_msgs.msg import JointState
+from geometry_msgs.msg import Transform
+from std_msgs.msg import String
+import numpy as np 
+import utility 
+import rosbag 
+ 
+
+mapping={'joint2':['right_shoulder_','right_elbow_','right_hand_','right_elbow_'],'joint4':['left_hip_', 'left_shoulder_', 'left_elbow_'],'joint5':['left_shoulder_', 'left_elbow_','left_hand_'],'joint7':['torso_', 'right_hip_','right_knee_'],
+'joint8':['right_hip_', 'right_knee_','right_foot_'],'joint10':['head_', 'torso_','left_hip_'],'joint11':['head_', 'neck_','torso_']}
+
+joint_state=[]
+
+
+def map_to_character():
+    pub = rospy.Publisher("joint_states", JointState, queue_size = 10)
+    rospy.set_param('~Fre',50)
+    rate=rospy.Rate(rospy.get_param('~Fre'))
+    
+    while not rospy.is_shutdown():
+        now = rospy.Time.now()
+        
+        for i in range (1,10):
+            torso_id= "torso_"+str(i)
+            if listener.frameExists(torso_id):
+                ID=str(i)
+                break
+            else:
+                ID=str(1)
+                   
+        try: 
+            tran_a=Transform()
+            tran_b=Transform()
+            
+            for key in mapping:
+                #look up two transforms relevant to the same frame
+                
+                a=utility.get_trans(mapping[key][1]+ID, now, mapping[key][0]+ID, rospy.Duration(4.0), listener)
+                
+                '''
+                tran_a.translation.x=list(a)[0]
+                tran_a.translation.y=list(a)[1]
+                tran_a.translation.z=list(a)[2]
+                bag.write('transform_a',tran_a)
+                '''
+                
+                b=utility.get_trans(mapping[key][2]+ID, now, mapping[key][3]+ID, rospy.Duration(4.0),listener)
+                
+                '''
+                tran_b.translation.x=list(b)[0]
+                tran_b.translation.y=list(b)[1]
+                tran_b.translation.z=list(b)[2] 
+                bag.write('transform_b',tran_b)
+                '''
+                theta=utility.get_theta(a,b)
+                #theta=0
+                joint_state.append((key,theta))
+                
+            #add spherical joint angles 
+            listener.waitForTransform('right_shoulder_'+ID,'right_elbow_'+ID,now, rospy.Duration(4.0))
+            (trans_spherical,rot_spherical)=listener.lookupTransform('right_shoulder_'+ID, 'right_elbow_'+ID, now)
+            
+            euler_angles=utility.get_euler_from_spherical(rot_spherical)
+            joint_state.append(('spherical1',euler_angles[0]))
+            joint_state.append(('spherical2',euler_angles[1]))
+            joint_state.append(('spherical3',euler_angles[2]))
+             
+                        
+            dishes = dict(joint_state)
+                    
+        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            pass 
+ 
+        keys=dishes.viewkeys()
+        values = dishes.viewvalues()
+        
+        js = JointState(name=list(keys),position=list(values))
+        js.header.stamp = rospy.Time.now()
+        
+        pub.publish(js)
+        rate.sleep()  
+                
+if __name__ == '__main__':
+    try:
+        rospy.init_node('map_to_char', anonymous = True)
+        #bag=rosbag.Bag('tfdata.bag','w')
+        listener = tf.TransformListener()
+        rospy.sleep(2.)
+        base_time = rospy.Time.now()
+        map_to_character()
+        #bag.close()
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass

@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<robot name="my_robot">
+
+  <link name="base_link">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link>
+  
+  <joint name="spherical1" type="continuous">
+    <parent link="base_link"/>
+    <child link="shoulder1"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 0 1" rpy="0 0 0 "/>
+  </joint>
+  
+  <link name="shoulder1">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link>
+  
+  <joint name="spherical2" type="continuous">
+    <parent link="shoulder1"/>
+    <child link="shoulder2"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="1 0 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <link name="shoulder2">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link>
+  
+  <joint name="spherical3" type="continuous">
+    <parent link="shoulder2"/>
+    <child link="shoulder3"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <link name="shoulder3">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </link>
+  
+  <joint name="spherical4" type="fixed">
+    <parent link="shoulder3"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+  
+  <link name="link1">
+    <visual>
+      <geometry>
+        <cylinder length="0.5" radius="0.02"/>
+      </geometry>
+      <origin xyz="0.25 0 0" rpy="0 1.57 0" />
+      <material name="blue">
+        <color rgba="0 0 .81 1"/>
+      </material>
+    </visual>
+  </link>
+   
+  <link name="link2">
+    <visual>
+      <geometry>
+        <cylinder length="0.25" radius="0.02"/>
+      </geometry>
+      <origin xyz="0.125 0 0" rpy="0 1.57 0" />
+      <material name="red">
+        <color rgba=".81 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+  
+  <link name="end_effector1">
+    
+      <origin xyz="0.5 0.289 0" rpy="0 0 0" />
+      
+  </link>
+   
+  <joint name="joint2" type="continuous">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0.5 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <joint name="joint3" type="fixed">
+    <parent link="link2"/>
+    <child link="end_effector1"/>
+    <origin xyz="0.25 0 0" rpy="0 0 0" />
+  </joint>
+  
+  <link name="link3">
+    <visual>
+      <geometry>
+        <cylinder length="0.5" radius="0.02"/>
+      </geometry>
+      <origin xyz="-0.25 0 0" rpy="0 1.57 0" />
+      <material name="blue">
+        <color rgba="0 0 .81 1"/>
+      </material>
+    </visual>
+  </link>
+   
+  <link name="link4">
+    <visual>
+      <geometry>
+        <cylinder length="0.25" radius="0.02"/>
+      </geometry>
+      <origin xyz="-0.125 0 0" rpy="0 1.57 0" />
+      <material name="red">
+        <color rgba=".81 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+  
+  <link name="end_effector2">
+    
+      <origin xyz="-0.5 0 0" rpy="0 1.57 0" />
+      
+  </link>
+   
+  <joint name="joint4" type="continuous">
+    <parent link="base_link"/>
+    <child link="link3"/>
+    <origin xyz="0 0 0" rpy="0 0 0.52" />
+    <axis xyz="0 -1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <joint name="joint5" type="continuous">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="-0.5 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <joint name="joint6" type="fixed">
+    <parent link="link4"/>
+    <child link="end_effector2"/>
+    <origin xyz="-0.25 0 0" rpy="0 0 0" />
+  </joint>
+  
+  <link name="link5">
+    <visual>
+      <geometry>
+        <cylinder length="0.5" radius="0.02"/>
+      </geometry>
+      <origin xyz="0.25 0 0" rpy="0 1.57 0" />
+      <material name="blue">
+        <color rgba="0 0 .81 1"/>
+      </material>
+    </visual>
+  </link>
+   
+  <link name="link6">
+    <visual>
+      <geometry>
+        <cylinder length="0.25" radius="0.02"/>
+      </geometry>
+      <origin xyz="0.125 0 0" rpy="0 1.57 0" />
+      <material name="red">
+        <color rgba=".81 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+  
+  <link name="end_effector3">
+    
+      <origin xyz="0.5 0.289 0" rpy="0 1.57 0" />
+      
+  </link>
+   
+  <joint name="joint7" type="continuous">
+    <parent link="base_link"/>
+    <child link="link5"/>
+    <origin xyz="0 0 0" rpy="0 0 1.57" />
+    <axis xyz="0 1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <joint name="joint8" type="continuous">
+    <parent link="link5"/>
+    <child link="link6"/>
+    <origin xyz="0.5 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <joint name="joint9" type="fixed">
+    <parent link="link6"/>
+    <child link="end_effector3"/>
+    <origin xyz="0.25 0 0" rpy="0 0 0" />
+  </joint>
+  
+  <link name="link7">
+    <visual>
+      <geometry>
+        <cylinder length="2" radius="0.02"/>
+      </geometry>
+      <origin xyz="0 0 1" rpy="0 0 0" />
+      <material name="blue">
+        <color rgba="0 0 .81 1"/>
+      </material>
+    </visual>
+  </link>
+  
+  <joint name="joint10" type="continuous">
+    <parent link="base_link"/>
+    <child link="link7"/>
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <joint name="joint11" type="continuous">
+    <parent link="link7"/>
+    <child link="end_effector4"/>
+    <origin xyz="0 0 2" rpy="0 0 0" />
+    <axis xyz="0 1 0" rpy="0 0 0 "/>
+  </joint>
+  
+  <link name="end_effector4">
+    <visual>
+      <geometry>
+        <box size="0.8 1.2 0.02" />
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0.785 0" />
+      <material name="blue">
+        <color rgba="0 0 .81 1"/>
+      </material>
+    </visual>
+  </link>
+  
+</robot>
+  

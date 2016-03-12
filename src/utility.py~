@@ -1,0 +1,70 @@
+#!/usr/bin/python
+
+import numpy as np
+import rospy
+import roslib
+import tf 
+from tf import transformations as tr
+from geometry_msgs.msg import Transform
+
+trans_data=Transform()
+
+#get the last five skeleton data and return the tran after fitering 
+def get_trans(frame_1,now,frame_2,duration,listener): 
+    trans_list_x=[]
+    trans_list_y=[]
+    trans_list_z=[]
+    
+    listener.waitForTransform(frame_1,frame_2,now,duration)
+    (trans,rot)=listener.lookupTransform(frame_1,frame_2,now)
+    if len(trans_list_x) > 100:
+      trans_list_x.pop(0)
+    trans_list_x.append(list(trans)[0])
+    if len(trans_list_y) > 100 :
+      trans_list_y.pop(0)
+    trans_list_y.append(list(trans)[1])
+    if len(trans_list_z) > 100:
+      trans_list_z.pop(0)
+    trans_list_z.append(list(trans)[2])
+     
+    f_x=double_expo_smooth(trans_list_x)
+    f_y=double_expo_smooth(trans_list_y)
+    f_z=double_expo_smooth(trans_list_z)
+        
+    return [f_x,f_y,f_z]
+
+#fitering     
+def double_expo_smooth(val_list):
+    alpha = 0.25
+    gamma = 0.01
+    bn= 0.0
+    prev_bn= 0.0
+    prev_val = 0.0
+    
+    for item in val_list:
+        val = alpha*item + (1-alpha)*(prev_val+prev_bn)
+        bn = gamma*(item-prev_val)+(1-gamma)*prev_bn   
+        prev_bn=bn
+        prev_val=val 
+    return val 
+
+def get_theta(vec_a,vec_b):    
+    length_a=np.sqrt(vec_a[0]**2+vec_a[1]**2+vec_a[2]**2)
+    length_b=np.sqrt(vec_b[0]**2+vec_b[1]**2+vec_b[2]**2)
+    dotproduct=vec_a[0]*vec_b[0]+vec_a[1]*vec_b[1]+vec_a[2]*vec_b[2]
+    value=dotproduct/length_a/length_b
+    if  value > 1:
+        value = 1
+    if value < -1:
+        value = -1 
+    theta=np.arccos(value)
+    return flip*theta 
+    
+def get_euler_from_spherical(R):
+    joints=tr.euler_from_quaternion(R,'rzxy')
+    return joints 
+    
+
+    
+    
+    
