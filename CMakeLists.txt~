@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(human_char_mapping)
+project(twolink_planar_robot)
 
 
 find_package(catkin REQUIRED roslaunch)

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>twolink_planar_robot</name>
+  <name>human_char_mapping</name>
   <version>0.0.0</version>
-  <description>The twolink_planar_robot package</description>
+  <description>The human_char_mapping package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

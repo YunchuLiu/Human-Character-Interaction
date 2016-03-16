@@ -7,18 +7,18 @@
   
   <arg name="test_spherical" default="0"/>
 
-  <arg name="model" default="$(find human_character_interaction)/urdf/my_robot.urdf"/>
+  <arg name="model" default="$(find twolink_planar_robot)/urdf/my_robot.urdf"/>
   
   <arg name="gui" default="false"/>
   
-  <param name="robot_description" textfile="$(find human_character_interaction)/urdf/my_robot.urdf"/>
+  <param name="robot_description" textfile="$(find twolink_planar_robot)/urdf/my_robot.urdf"/>
   <param name="use_gui" value="$(arg gui)"/>
   
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
   
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" if="$(arg gui)"/>
   
-  <node name="map_to_char" pkg="human_character_interaction" type="first.py" if="$(arg self_joint_publisher)">
+  <node name="map_to_char" pkg="twolink_planar_robot" type="first.py" if="$(arg self_joint_publisher)">
     <param name="Fre" value="50"/>
   </node>
   
