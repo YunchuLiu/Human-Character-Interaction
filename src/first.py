@@ -10,7 +10,7 @@ from geometry_msgs.msg import Transform
 from std_msgs.msg import String
 import numpy as np 
 import utility 
-import rosbag 
+ 
  
 
 mapping={'joint2':['right_shoulder_','right_elbow_','right_hand_','right_elbow_'],'joint4':['left_hip_', 'left_shoulder_', 'left_elbow_', 'left_shoulder_'],'joint5':['left_shoulder_', 'left_elbow_','left_hand_','left_elbow_'],'joint7':['torso_', 'right_hip_','right_knee_', 'right_hip_'],
@@ -43,24 +43,9 @@ def map_to_character():
                 #look up two transforms relevant to the same frame
                 
                 a=utility.get_trans(mapping[key][1]+ID, now, mapping[key][0]+ID, rospy.Duration(4.0), listener)
-                
-                '''
-                tran_a.translation.x=list(a)[0]
-                tran_a.translation.y=list(a)[1]
-                tran_a.translation.z=list(a)[2]
-                bag.write('transform_a',tran_a)
-                '''
-                
                 b=utility.get_trans(mapping[key][2]+ID, now, mapping[key][3]+ID, rospy.Duration(4.0),listener)
                 
-                '''
-                tran_b.translation.x=list(b)[0]
-                tran_b.translation.y=list(b)[1]
-                tran_b.translation.z=list(b)[2] 
-                bag.write('transform_b',tran_b)
-                '''
                 theta=utility.get_theta(a,b)
-                #theta=0
                 joint_state.append((key,theta))
                 
             #add spherical joint angles 
@@ -90,12 +75,10 @@ def map_to_character():
 if __name__ == '__main__':
     try:
         rospy.init_node('map_to_char', anonymous = True)
-        #bag=rosbag.Bag('tfdata.bag','w')
         listener = tf.TransformListener()
         rospy.sleep(2.)
         base_time = rospy.Time.now()
         map_to_character()
-        #bag.close()
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

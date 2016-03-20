@@ -1,12 +1,9 @@
 <launch>
-  
-  
+ 
   <arg name="use_rviz" default="1"/>
   
   <arg name="self_joint_publisher" default="1"/>
   
-  <arg name="test_spherical" default="0"/>
-
   <arg name="model" default="$(find human_char_mapping)/urdf/my_robot.urdf"/>
   
   <arg name="gui" default="false"/>
@@ -21,13 +18,10 @@
   <node name="map_to_char" pkg="human_char_mapping" type="first.py" if="$(arg self_joint_publisher)">
     <param name="Fre" value="50"/>
   </node>
-  
-  <node name="test" pkg="human_char_mapping" type="test_spherical.py" if="$(arg test_spherical)">
-    <param name="Fre" value="50"/>
-  </node>
+ 
   
   <group ns="use_rviz" if="$(arg use_rviz)">
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find human_char_mapping)/launch/two-link-config.rviz" required="true"/> 
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find human_char_mapping)/launch/char-config.rviz" required="true"/> 
   </group>
   
 
