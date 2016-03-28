@@ -21,7 +21,7 @@ joint_state=[]
 
 def map_to_character():
     pub = rospy.Publisher("joint_states", JointState, queue_size = 10)
-    rospy.set_param('~Fre',100)
+    rospy.set_param('~Fre',150)
     rate=rospy.Rate(rospy.get_param('~Fre'))
     
     while not rospy.is_shutdown():

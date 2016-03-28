@@ -75,8 +75,10 @@ def double_expo_smooth(frames,val_list):
     elif v_low <= vn <= v_high:
         alpha = alpha_high + (vn-v_high)*(alpha_low-alpha_high)/(v_low-v_high)
               
-    else:
+    elif vn > v_high:
         alpha = alpha_high
+    else:
+        alpha = (a_high+a_low)/2.0
     
     val = alpha*val_list[-1]+ (1-alpha)*(local_prev_val+local_prev_bn)
     bn = gamma*(val_list[-1]-local_prev_val)+(1-gamma)*local_prev_bn   
