@@ -1,22 +1,35 @@
-# Human-Character-Interaction
+## Human-Character-Interaction
 
-Connect Kinect to computer. Set up OpenNI NITE tracker:
+### Overview 
 
-`roslaunch openni_launch openni.launch`
+This repository is documented for the quarter-long project Human-Character-Interaction. Please refer to this [link](http://yunchuliu.github.io/Portfolio/projects/project-5/) for more desription. 
 
-`roslaunch openni_tracker openni_tracker`
+### Files in Package
 
-After the calibration is complete, run the following command to launch:
+* __my_robot.launch__
 
-`roslaunch human_char_mapping myrobot.launch`
+Launches nodes: [robot_state_publisher](http://wiki.ros.org/robot_state_publisher), which subscribes to the `joint_states` topic and publishes the state of a robot to [tf](http://wiki.ros.org/tf), [joint_state_publisher](http://wiki.ros.org/joint_state_publisher), __map_to_char__ and __rviz__
 
-The settings of RViz is configured by char-config.rviz
+It also defines several parameters such as `gui`,`self_joint_publisher` and `use_rviz`. By remapping the parameter to 1 (true) or 0 (false), we can choose whether to use gui, start mapping and startup RViz. 
 
-The URDF of the character is written in my_robot.urdf
+* __char-config.rviz__
 
-The main mapping is executed by first.py
+Set the configurations when loading RViz
 
-The tool functions for calculating joint angles and the filtering are in utility.py
+* __my_robot.urdf__
+
+The URDF for the character: the music stand 
+
+* __first.py__
+
+The main script in the package. It initializes the node __map_to_char__, looks up the transforms, calculates the joint angles for each joint and publishes [JointState message](http://docs.ros.org/api/sensor_msgs/html/msg/JointState.html) to `joint_states` topic. 
+
+* __utility.py__
+
+This script includes the functions we utilize. **get_trans()** looks up the transforms published by tf and returns the filtered vectors relating two frames. **double_expo_smooth()** implements the Adaptive Double Exponential Smoothing Filter specified on [Skeleton Joint Smoothing White Paper](https://msdn.microsoft.com/en-us/library/jj131429.aspx). **reset_filter()** initialize the parameters of the filter. **get_theta()** calculates revolute joint angles. **get_euler_from_spherical()** converts the rotation in Quaternion to Euler angles. 
+ 
+
+
 
 
 
